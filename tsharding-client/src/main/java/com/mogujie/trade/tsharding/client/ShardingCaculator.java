@@ -51,10 +51,10 @@ public class ShardingCaculator {
         if (shardingPara >= 0) {
 
             if ("sellerUserId".equals(fieldName)) {
-                return "sellertrade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 100);
+                return "sellertrade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
             } else {
 //                return "trade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
-                return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 100);
+                return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
 
             }
         }

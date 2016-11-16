@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 分片计算器
@@ -42,7 +43,7 @@ public class ShardingCaculator {
 
 
     /**
-     * 根据分片参数值计算分库名（逻辑库）
+     * 根据分片参数值计算分库名（逻辑库）从1开始
      *
      * @param shardingPara
      * @return 分库名000x
@@ -54,13 +55,25 @@ public class ShardingCaculator {
                 return "sellertrade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
             } else {
 //                return "trade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
-                return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
+                return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64+1);
 
             }
         }
         return null;
     }
 
+    /**
+     * 根据分片参数值计算分库名（逻辑库）从1开始
+     *
+     * @param shardingPara
+     * @return 分库名000x
+     */
+    public static Integer caculateSchemaIndex(Long shardingPara) {
+        if (shardingPara >= 0) {
+            return new Long((shardingPara % 10000 % 512) / 64+1).intValue();
+        }
+        return null;
+    }
     /**
      * 根据分片参数值计算数据源名
      *
@@ -78,6 +91,11 @@ public class ShardingCaculator {
         return null;
     }
 
+    /**
+     * 4 位数字补 0
+     * @param number
+     * @return
+     */
     public static String getNumberWithZeroSuffix(long number) {
         if (number >= 100) {
             return "0" + number;
@@ -112,6 +130,70 @@ public class ShardingCaculator {
         }
         return shopOrderIdsMap;
     }
+
+
+    /**
+     * 分库分表信息（前 5 位）补 0
+     * @param number
+     * @return
+     */
+    public static String getNumberWithZeroPrefix(long number) {
+        if (number >= 1000) {
+            return number + "0";
+        } else if (number >= 100) {
+            return number + "00";
+        } else if (number >= 10) {
+            return number + "000";
+        } else if (number >= 0) {
+            return number + "0000";
+        }
+        return null;
+    }
+
+    private final static Object lock = new Object();
+
+    //当前最新的订单号信息
+    private static ConcurrentHashMap<String, Object> currentOrderInfo = new ConcurrentHashMap<>();
+
+    static {
+        currentOrderInfo.put("currentTime", 0L);
+        currentOrderInfo.put("increment", 0);
+    }
+
+    /**
+     * 生成订单号
+     * @return
+     */
+    public static long generateOrderNo() {
+        long orderIdNo = 0L;
+        synchronized (lock) {
+            long currentTimeMap = (long) currentOrderInfo.get("currentTime");
+            long currentTime = System.currentTimeMillis();
+            if (currentTimeMap == currentTime) {
+                currentOrderInfo.put("increment", (int) currentOrderInfo.get("increment") + 1);
+            } else {
+                currentOrderInfo.put("increment", 0);
+                currentOrderInfo.put("currentTime", currentTime);
+            }
+            long orderTempNo = new Long(String.format("%d%d", currentTime, (int) currentOrderInfo.get("increment")));
+            String tshardingNo = ShardingCaculator.getNumberWithZeroPrefix(new Long(String.format("%d%d", ShardingCaculator.caculateSchemaIndex(orderTempNo), ShardingCaculator.caculateTableIndex(orderTempNo))));
+//            System.out.println("tshardingNo:" + tshardingNo);
+//            System.out.println("orderTempNo:" + orderTempNo);
+            orderIdNo = new Long(String.format("%s%d", tshardingNo, orderTempNo));
+            System.out.println("orderIdNo:" + orderIdNo);
+//            System.out.println("caculateSchemaName:" + ShardingCaculator.caculateSchemaName("re", orderIdNo));
+//            System.out.println("caculateTableName:" + ShardingCaculator.caculateTableName(orderIdNo));
+        }
+        return orderIdNo;
+    }
+
+
+
+
+
+
+
+
 
     public static void main(String args[]) {
         System.out.println(caculateTableName(6000004386417L));

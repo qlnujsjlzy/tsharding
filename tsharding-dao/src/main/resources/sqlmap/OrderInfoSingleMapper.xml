@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mogujie.tsharding.dao.mapper.OrderInfoSingleMapper">
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO orderinfo (orderId,orderInfo,cartInfo,status,platId,sourceId,memberId,memberCode,lenovoId,merchantId,createTime)
+        VALUES (#{orderInfoEntity.orderId},#{orderInfoEntity.orderInfo},#{orderInfoEntity.cartInfo},#{orderInfoEntity.status},#{orderInfoEntity.platId},#{orderInfoEntity.sourceId},#{orderInfoEntity.memberId},#{orderInfoEntity.memberCode},#{orderInfoEntity.lenovoId},#{orderInfoEntity.merchantId},#{orderInfoEntity.createTime})
+    </insert>
+    
+    <delete id="delete">
+        DELETE FROM orderinfo where orderId=#{orderId}
+    </delete>
+    
+</mapper>

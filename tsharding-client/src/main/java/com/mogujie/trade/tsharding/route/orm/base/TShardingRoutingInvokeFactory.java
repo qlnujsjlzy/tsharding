@@ -130,7 +130,6 @@ public class TShardingRoutingInvokeFactory implements InvokerFactory<Class<?>> {
                         shardingMetadata.setShardingKey(shardingKey);
                         shardingMetadata.setTableSuffix(ShardingCaculator.getNumberWithZeroSuffix((shardingKey % 10000) % 512));
                         shardingMetadata.setSchemaName(schemaName);
-                        System.out.println("shardingMetadata:"+shardingMetadata);
                         return shardingMetadata;
                     }
                 }

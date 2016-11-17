@@ -1,9 +1,7 @@
 package com.mogujie.tsharding.trade.tsharding.route.orm;
 
 import com.mogujie.tsharding.trade.tsharding.client.ShardingCaculator;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
+import javassist.*;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -60,6 +58,7 @@ public abstract class MapperEnhancer {
 
         Class originClass = Class.forName(mapperClassName);
         Method[] originMethods = originClass.getDeclaredMethods();
+        pool.insertClassPath(new ClassClassPath(MapperEnhancer.class));
         CtClass cc = pool.get(mapperClassName);
 
         for (CtMethod ctMethod : cc.getDeclaredMethods()) {
@@ -80,7 +79,7 @@ public abstract class MapperEnhancer {
             Class<?> loadThisClass = enhanceClass.toClass();
 
             //2015.09.22后不再输出类到本地
-            enhanceClass.writeFile("target/classes");
+            enhanceClass.writeFile(".");
         }
     }
 

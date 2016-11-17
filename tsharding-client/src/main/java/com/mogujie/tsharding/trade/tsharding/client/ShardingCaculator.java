@@ -1,5 +1,9 @@
 package com.mogujie.tsharding.trade.tsharding.client;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @auther qigong on 5/28/15 1:06 PM.
  */
 public class ShardingCaculator {
+
+    private static final Logger logger = LoggerFactory.getLogger(ShardingCaculator.class);
 
     /**
      * 根据分片参数值计算分表名
@@ -55,7 +61,7 @@ public class ShardingCaculator {
                 return "sellertrade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
             } else {
 //                return "trade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
-                return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64+1);
+                return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64 + 1);
 
             }
         }
@@ -70,10 +76,11 @@ public class ShardingCaculator {
      */
     public static Integer caculateSchemaIndex(Long shardingPara) {
         if (shardingPara >= 0) {
-            return new Long((shardingPara % 10000 % 512) / 64+1).intValue();
+            return new Long((shardingPara % 10000 % 512) / 64 + 1).intValue();
         }
         return null;
     }
+
     /**
      * 根据分片参数值计算数据源名
      *
@@ -93,6 +100,7 @@ public class ShardingCaculator {
 
     /**
      * 4 位数字补 0
+     *
      * @param number
      * @return
      */
@@ -134,6 +142,7 @@ public class ShardingCaculator {
 
     /**
      * 分库分表信息（前 5 位）补 0
+     *
      * @param number
      * @return
      */
@@ -156,43 +165,34 @@ public class ShardingCaculator {
     private static ConcurrentHashMap<String, Object> currentOrderInfo = new ConcurrentHashMap<>();
 
     static {
-        currentOrderInfo.put("currentTime", 0L);
+        currentOrderInfo.put("currentTime", "0");
         currentOrderInfo.put("increment", 0);
     }
 
     /**
      * 生成订单号
+     *
      * @return
      */
     public static long generateOrderNo() {
         long orderIdNo = 0L;
+        long start=System.currentTimeMillis();
         synchronized (lock) {
-            long currentTimeMap = (long) currentOrderInfo.get("currentTime");
-            long currentTime = System.currentTimeMillis();
-            if (currentTimeMap == currentTime) {
+            String currentTimeMap = (String) currentOrderInfo.get("currentTime");
+            String currentTime = String.valueOf(System.currentTimeMillis());
+            if (currentTimeMap.equals(currentTime)) {
                 currentOrderInfo.put("increment", (int) currentOrderInfo.get("increment") + 1);
             } else {
                 currentOrderInfo.put("increment", 0);
                 currentOrderInfo.put("currentTime", currentTime);
             }
-            long orderTempNo = new Long(String.format("%d%d", currentTime, (int) currentOrderInfo.get("increment")));
+            long orderTempNo = new Long(String.format("%s%d", currentTime, (int) currentOrderInfo.get("increment")));
             String tshardingNo = ShardingCaculator.getNumberWithZeroPrefix(new Long(String.format("%d%d", ShardingCaculator.caculateSchemaIndex(orderTempNo), ShardingCaculator.caculateTableIndex(orderTempNo))));
-//            System.out.println("tshardingNo:" + tshardingNo);
-//            System.out.println("orderTempNo:" + orderTempNo);
-            orderIdNo = new Long(String.format("%s%d", tshardingNo, orderTempNo));
-            System.out.println("orderIdNo:" + orderIdNo);
-//            System.out.println("caculateSchemaName:" + ShardingCaculator.caculateSchemaName("re", orderIdNo));
-//            System.out.println("caculateTableName:" + ShardingCaculator.caculateTableName(orderIdNo));
+            orderIdNo = new Long(String.format("%s%s", tshardingNo, String.valueOf(orderTempNo)));
+            logger.info("orderIdNo:{}-time consuming:{}",orderIdNo,System.currentTimeMillis()-start);
         }
         return orderIdNo;
     }
-
-
-
-
-
-
-
 
 
     public static void main(String args[]) {

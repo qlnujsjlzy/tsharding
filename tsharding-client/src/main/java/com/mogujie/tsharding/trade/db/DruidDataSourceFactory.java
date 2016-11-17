@@ -38,6 +38,14 @@ public class DruidDataSourceFactory implements DataSourceFactory<DruidDataSource
 
         dataSource.setProxyFilters(filters);
 
+        /*过时间限制是否回收*/
+        dataSource.setRemoveAbandoned(true);
+        /* 超时时间；单位为秒*/
+        dataSource.setRemoveAbandonedTimeout(120);
+        /*关闭abanded连接时输出错误日志*/
+        dataSource.setLogAbandoned(true);
+
+
         dataSource.init();
         return dataSource;
     }

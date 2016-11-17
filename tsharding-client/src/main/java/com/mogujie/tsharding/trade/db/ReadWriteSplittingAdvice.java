@@ -32,6 +32,7 @@ public class ReadWriteSplittingAdvice {
             }
 
             // 若已经设置为Master 则忽略
+            logger.info("ReadWriteSplittingContext.isMaster:{}",ReadWriteSplittingContext.isMaster());
             if (ReadWriteSplittingContext.isMaster()) {
                 return proceedingJoinPoint.proceed();
             }

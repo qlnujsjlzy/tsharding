@@ -1,6 +1,6 @@
 package com.mogujie.tsharding.test.client;
 
-import com.mogujie.trade.tsharding.client.ShardingCaculator;
+import com.mogujie.tsharding.trade.tsharding.client.ShardingCaculator;
 import org.junit.Assert;
 import org.junit.Test;
 

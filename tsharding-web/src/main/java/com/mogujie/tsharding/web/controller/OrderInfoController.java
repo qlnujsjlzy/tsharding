@@ -1,13 +1,12 @@
 package com.mogujie.tsharding.web.controller;
 
-import com.mogujie.trade.tsharding.client.ShardingCaculator;
+import com.mogujie.tsharding.trade.tsharding.client.ShardingCaculator;
 import com.mogujie.tsharding.domain.OrderInfoEntity;
 import com.mogujie.tsharding.service.OrderInfoTshardingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,7 +22,6 @@ public class OrderInfoController {
     private OrderInfoTshardingService orderInfoTshardingService;
 
     @RequestMapping(value = "/tsharding")
-    @ResponseBody
     public String insertOrderInfo() {
         long orderId=ShardingCaculator.generateOrderNo();
         OrderInfoEntity entity = new OrderInfoEntity();
@@ -35,14 +33,13 @@ public class OrderInfoController {
         entity.setSourceId(0);
         entity.setMerchantId(1234567876);
         entity.setMemberCode("licy13@lenovo.com");
-        entity.setLenovoId("11111111111");
+        entity.setLenovoId("3345678965");
         entity.setOrderId(orderId);
         orderInfoTshardingService.insert(entity);
         return String.valueOf(orderId);
     }
 
     @RequestMapping(value = "/single")
-    @ResponseBody
     public String insertSingleOrderInfo() {
         long orderId=ShardingCaculator.generateOrderNo();
         OrderInfoEntity entity = new OrderInfoEntity();

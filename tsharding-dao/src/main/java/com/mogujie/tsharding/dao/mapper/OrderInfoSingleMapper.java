@@ -1,7 +1,7 @@
 package com.mogujie.tsharding.dao.mapper;
 
 
-import com.mogujie.trade.db.DataSourceRouting;
+import com.mogujie.tsharding.trade.db.DataSourceRouting;
 import com.mogujie.tsharding.domain.OrderInfoEntity;
 import org.apache.ibatis.annotations.Param;
 

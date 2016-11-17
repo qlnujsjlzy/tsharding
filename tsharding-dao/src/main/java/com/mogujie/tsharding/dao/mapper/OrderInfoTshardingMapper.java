@@ -1,11 +1,11 @@
 package com.mogujie.tsharding.dao.mapper;
 
 
-import com.mogujie.trade.db.DataSourceRouting;
-import com.mogujie.trade.tsharding.annotation.ShardingExtensionMethod;
-import com.mogujie.trade.tsharding.annotation.parameter.ShardingOrderPara;
-import com.mogujie.trade.tsharding.route.TShardingRoutingHandler;
-import com.mogujie.trade.tsharding.route.orm.MapperResourceEnhancer;
+import com.mogujie.tsharding.trade.db.DataSourceRouting;
+import com.mogujie.tsharding.trade.tsharding.annotation.ShardingExtensionMethod;
+import com.mogujie.tsharding.trade.tsharding.annotation.parameter.ShardingOrderPara;
+import com.mogujie.tsharding.trade.tsharding.route.TShardingRoutingHandler;
+import com.mogujie.tsharding.trade.tsharding.route.orm.MapperResourceEnhancer;
 import com.mogujie.tsharding.domain.OrderInfoEntity;
 import org.apache.ibatis.annotations.Param;
 

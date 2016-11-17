@@ -10,8 +10,9 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
+            classpath:applicationContext-springmvc.xml,
             classpath:applicationContext-dao.xml,
-            classpath:applicationContext-datasource.xml,
+            classpath:applicationContext-datasource.xml
         </param-value>
     </context-param>
     
@@ -43,16 +44,16 @@
     </listener>
     
     <servlet>
-        <servlet-name>dispatcher</servlet-name>
+        <servlet-name>dispatcher-servlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:/applicationContext-springmvc.xml</param-value>
+            <param-value>classpath:applicationContext-springmvc.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>dispatcher</servlet-name>
+        <servlet-name>dispatcher-servlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     

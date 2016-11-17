@@ -16,13 +16,13 @@
     
     <!--tsharding 配置-->
     <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
-        <property name="dataSourceLogEnabled" value="false"/>
-        <property name="resultSetLogEnabled" value="false"/>
+        <property name="dataSourceLogEnabled" value="true"/>
+        <property name="resultSetLogEnabled" value="true"/>
         <property name="statementLogEnabled" value="true"/>
         <property name="statementExecutableSqlLogEnable" value="true"/>
     </bean>
     
-    <bean name="druidDataSourceFactory" class="com.mogujie.trade.db.DruidDataSourceFactory">
+    <bean name="druidDataSourceFactory" class="com.mogujie.tsharding.trade.db.DruidDataSourceFactory">
         <property name="filters">
             <list>
                 <ref bean="logFilter"/>
@@ -30,11 +30,11 @@
         </property>
     </bean>
     
-    <bean name="dataSourceScanner" class="com.mogujie.trade.db.DataSourceScanner">
+    <bean name="dataSourceScanner" class="com.mogujie.tsharding.trade.db.DataSourceScanner">
         <property name="dataSourceFactory" ref="druidDataSourceFactory"/>
     </bean>
     
-    <bean name="readWriteSplittingAdvice" class="com.mogujie.trade.db.ReadWriteSplittingAdvice"/>
+    <bean name="readWriteSplittingAdvice" class="com.mogujie.tsharding.trade.db.ReadWriteSplittingAdvice"/>
     
     <!-- 采用@Transactional注解方式使用事务    -->
     <tx:annotation-driven mode="proxy"/>

@@ -60,7 +60,6 @@ public abstract class MapperEnhancer {
 
         Class originClass = Class.forName(mapperClassName);
         Method[] originMethods = originClass.getDeclaredMethods();
-        pool.insertClassPath("/com/mogujie/tsharding/dao/mapper");
         CtClass cc = pool.get(mapperClassName);
 
         for (CtMethod ctMethod : cc.getDeclaredMethods()) {

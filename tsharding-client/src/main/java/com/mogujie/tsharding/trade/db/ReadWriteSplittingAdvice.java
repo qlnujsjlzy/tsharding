@@ -21,7 +21,7 @@ public class ReadWriteSplittingAdvice {
 
     private final Map<Method, DataSourceType> cache = new ConcurrentHashMap<>();
 
-    @Around("@annotation(com.mogujie.trade.db.ReadWriteSplitting)")
+    @Around("@annotation(com.mogujie.tsharding.trade.db.ReadWriteSplitting)")
     public Object intercept(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Signature signature = proceedingJoinPoint.getSignature();
         DataSourceType dataSourceType = null;

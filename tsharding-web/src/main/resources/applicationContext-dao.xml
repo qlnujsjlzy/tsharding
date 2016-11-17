@@ -4,10 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
    
-    <bean id="propertyConfigurer"
-          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations" value="classpath:app.properties"/>
-    </bean>
+
     
     <bean id="MapperScannerWithSharding" class="com.mogujie.tsharding.trade.tsharding.route.orm.MapperScannerWithSharding">
         <property name="packageName" value="${tsharding.orm.mapperPacakge}"/>
@@ -18,7 +15,10 @@
           depends-on="MapperScannerWithSharding">
         <property name="needEnhancedClasses" value="${tsharding.needEnhancedClasses}"/>
     </bean>
-
-
+    
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath*:*.properties"/>
+    </bean>
 
 </beans>

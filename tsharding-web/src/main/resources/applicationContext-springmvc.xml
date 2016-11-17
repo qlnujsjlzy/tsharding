@@ -8,11 +8,7 @@
        http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
    
     <context:annotation-config/>
-    <context:component-scan base-package="com.mogujie.tsharding.trade"/>
-    <context:component-scan base-package="com.mogujie.tsharding.dao" />
-    <context:component-scan base-package="com.mogujie.tsharding.domain" />
-    <context:component-scan base-package="com.mogujie.tsharding.service" />
-    <context:component-scan base-package="com.mogujie.tsharding.web" />
+    <context:component-scan base-package="com.mogujie.tsharding"/>
     
     
     <mvc:annotation-driven />

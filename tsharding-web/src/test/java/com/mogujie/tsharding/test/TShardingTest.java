@@ -19,6 +19,7 @@ public class TShardingTest extends BaseTest {
 
     @Test
     public void testInsertReceiver() {
+        logger.info("start");
         for (int i=101000000;i<10200000;i++){
             OrderInfoEntity entity = new OrderInfoEntity();
             String order="{\"customerOrderCode\":null,\"totalCost\":1499.0,\"totalPay\":1499.0,\"giveawayCost\":0.0,\"giveawayTotal\":0.0,\"discount\":0.0,\"couponsDiscount\":0.0,\"lipinkaDiscount\":0.0,\"creditTotal\":0,\"rePrice\":0.0,\"reCoupons\":0.0,\"paymentTypeId\":\"0\",\"notes\":\"\",\"submitTime\":1435283135817,\"shipmentTypeID\":0,\"clientIP\":null,\"clientSystemName\":null,\"clientBrowserName\":null,\"userLevel\":4,\"isRegister\":0,\"addOrderType\":\"1\",\"customerManagerCode\":\"\",\"deliverid\":\"c232ba77-936d-4456-a914-bc2d109af2ba\",\"orderRefer\":\"7\",\"deliveryAddress\":{\"orderId\":null,\"code\":\"F\",\"name\":\"马凯平\",\"address\":\"南湖西路17好\",\"zip\":\"\",\"mobile\":\"13988040167\",\"phone\":\"\",\"email\":\"\",\"province\":\"云南\",\"city\":\"红河\",\"county\":\"蒙自\",\"area\":\"\",\"provinceId\":\"240\",\"cityId\":null,\"countyId\":null,\"areaId\":null},\"orderCoupons\":[],\"orderInvoice\":{\"orderId\":null,\"invoiceTypeId\":1,\"invoiceContent\":\"个人\",\"invoiceHeader\":\"个人\",\"taxpayerIdentity\":null,\"registerAddress\":null,\"registerPhone\":null,\"depositBank\":null,\"bankNo\":null},\"productCoupons\":[],\"salesCouponCode\":null,\"codinform\":0,\"coddate\":null,\"codtime\":0}";

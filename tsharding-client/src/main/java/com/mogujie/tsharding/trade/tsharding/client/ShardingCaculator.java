@@ -27,9 +27,7 @@ public class ShardingCaculator {
      */
     public static String caculateTableName(Long shardingPara) {
         if (shardingPara >= 0) {
-//            return "TradeOrder" + getNumberWithZeroSuffix((shardingPara % 10000) % 512);
             return "orderinfo" + getNumberWithZeroSuffix((shardingPara % 10000) % 512);
-
         }
         return null;
     }
@@ -46,7 +44,18 @@ public class ShardingCaculator {
         }
         return null;
     }
-
+    /**
+     * 根据分片参数值计算分表名
+     *
+     * @param shardingPara
+     * @return 分表名0xxx
+     */
+    public static String caculateTableIndexWithZero(Long shardingPara) {
+        if (shardingPara >= 0) {
+            return getNumberWithZeroSuffix(shardingPara % 512);
+        }
+        return null;
+    }
 
     /**
      * 根据分片参数值计算分库名（逻辑库）从1开始
@@ -56,15 +65,8 @@ public class ShardingCaculator {
      */
     public static String caculateSchemaName(String fieldName, Long shardingPara) {
         if (shardingPara >= 0) {
-
-            if ("sellerUserId".equals(fieldName)) {
-                return "sellertrade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
-            } else {
-//                return "trade" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64);
                 return "receive" + getNumberWithZeroSuffix(((shardingPara % 10000) % 512) / 64 + 1);
-
             }
-        }
         return null;
     }
 
@@ -162,11 +164,11 @@ public class ShardingCaculator {
     private final static Object lock = new Object();
 
     //当前最新的订单号信息
-    private static ConcurrentHashMap<String, Object> currentOrderInfo = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, Long> currentOrderInfo = new ConcurrentHashMap<>();
 
     static {
-        currentOrderInfo.put("currentTime", "0");
-        currentOrderInfo.put("increment", 0);
+        currentOrderInfo.put("currentTime", 0L);
+        currentOrderInfo.put("increment", 0L);
     }
 
     /**
@@ -176,24 +178,34 @@ public class ShardingCaculator {
      */
     public static long generateOrderNo() {
         long orderIdNo = 0L;
-        long start=System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         synchronized (lock) {
-            String currentTimeMap = (String) currentOrderInfo.get("currentTime");
-            String currentTime = String.valueOf(System.currentTimeMillis());
-            if (currentTimeMap.equals(currentTime)) {
-                currentOrderInfo.put("increment", (int) currentOrderInfo.get("increment") + 1);
+            long currentTimeMap = currentOrderInfo.get("currentTime");
+            long currentTime = System.currentTimeMillis();
+            if (currentTimeMap == currentTime) {
+                currentOrderInfo.put("increment", currentOrderInfo.get("increment") + 1);
             } else {
-                currentOrderInfo.put("increment", 0);
+                currentOrderInfo.put("increment", 0L);
                 currentOrderInfo.put("currentTime", currentTime);
             }
-            long orderTempNo = new Long(String.format("%s%d", currentTime, (int) currentOrderInfo.get("increment")));
-            String tshardingNo = ShardingCaculator.getNumberWithZeroPrefix(new Long(String.format("%d%d", ShardingCaculator.caculateSchemaIndex(orderTempNo), ShardingCaculator.caculateTableIndex(orderTempNo))));
-            orderIdNo = new Long(String.format("%s%s", tshardingNo, String.valueOf(orderTempNo)));
-            logger.info("orderIdNo:{}-time consuming:{}",orderIdNo,System.currentTimeMillis()-start);
+            long increment = currentOrderInfo.get("increment");
+            orderIdNo = mergeIncrement(increment, currentTime);
+            logger.info("orderIdNo:{}-increment:{}", orderIdNo, increment);
         }
         return orderIdNo;
     }
 
+    private static long mergeIncrement(long increment, long currentTime) {
+        if (increment < 10) {
+            return currentTime * 10 + increment;
+        } else if (increment < 100) {
+            return currentTime * 100 + increment;
+        } else if (increment < 1000) {
+            return currentTime * 1000 + increment;
+        } else {
+            return currentTime * 10000 + increment;
+        }
+    }
 
     public static void main(String args[]) {
         System.out.println(caculateTableName(6000004386417L));
